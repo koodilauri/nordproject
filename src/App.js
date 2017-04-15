@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+// import { Field } from 'redux-form';
+
 import logo from './logo.svg';
 import './App.css';
 
@@ -7,7 +9,7 @@ function generateUserValues() {
   for (let i =0;i<20;i++){
     users.push({
       id: i,
-      name: "a"+i,
+      fullName: "a"+i,
       email: "a"+i+"@a.fi",
       phone: "00"+i
     })
@@ -20,25 +22,56 @@ class App extends Component {
   constructor(){
     super();
     this.state={
+      newUser: {
+        id: "",
+        fullName: "heu",
+        email:"",
+        phone:""
+      },
       users: generateUserValues()
     }
   }
 
+  handleChange = (field, event) => {
+    // if (field === 'fullName') {
+      this.state.newUser[field] = event.target.value;
+      this.setState({});
+    // }
+    console.log(this.state.newUser)
+  }
+
+  handleSubmit = (event) => {
+    event.preventDefault();
+  }
+
   renderCreateUser(){
+    const {newUser} = this.state;
     return(
-      <form>
+      <form onSubmit={this.handleSubmit}>
         <div>
           <div>
-            <label>Name</label>
-            <input/>
+            <input
+              name="fullName"
+              placeholder="Full name"
+              value={newUser.fullName}
+              onChange={this.handleChange.bind(this, 'fullName')}
+            />
           </div>
           <div>
-            <label>E-mail</label>
-            <input/>
+            <input
+              name="email"
+              placeholder="E-mail address"
+              value={newUser.email}
+              onChange={this.handleChange.bind(this, 'email')}
+            />
           </div>          
           <div>
-            <label>Phone</label>
-            <input/>
+            <input
+              name="phone"
+              placeholder="Phone number"
+              value={newUser.phone}
+              onChange={this.handleChange.bind(this, 'phone')}
+            />
           </div>
         </div>
         <button type="submit">Add new</button>
@@ -57,6 +90,7 @@ class App extends Component {
               <td>Name</td>
               <td>E-mail</td>
               <td>Phone</td>
+              <td></td>
             </tr>
           </thead>
           <tbody>
@@ -64,7 +98,8 @@ class App extends Component {
            <tr>
             <td>{ user.name }</td>
             <td>{ user.email }</td>
-            <td>{ user.phone }</td>            
+            <td>{ user.phone }</td>
+            <td>assdsf</td>            
           </tr>
         )}
           </tbody>
