@@ -22,6 +22,7 @@ class App extends Component {
   constructor(){
     super();
     this.state={
+      editingUserId: -1,
       // holds the value for sorting the rows
       // values: undefined, "ascend", "descend"
       sorted: {
@@ -30,6 +31,12 @@ class App extends Component {
         phone: undefined
       },
       newUser: {
+        id: "",
+        fullName: "",
+        email:"",
+        phone:""
+      },
+      editUser: {
         id: "",
         fullName: "",
         email:"",
@@ -59,12 +66,20 @@ class App extends Component {
     }
   }
 
-  handleChange = (field, event) => {
-    // if (field === 'fullName') {
+  handleChange = (field, type, event) => {
+    const newValue = event.target.value;
+    if (field === 'fullName') {
+      // if (newValue.test(\aZ[]\))
+    }
+    if (type === 'add') {
       this.state.newUser[field] = event.target.value;
       this.setState({});
-    // }
-    console.log(this.state)
+    }
+    if(type === 'edit') {
+      this.state.editUser[field] = event.target.value;
+      this.setState({});
+    }
+    // console.log(this.state)
   }
 
   handleSubmit = (event) => {
@@ -77,7 +92,13 @@ class App extends Component {
         fullName:"",
         email:"",
         phone:""
-      }
+      },
+      // editUser: {
+      //   id:"",
+      //   fullName:"",
+      //   email:"",
+      //   phone:""
+      // }
     })
 }
 
@@ -114,44 +135,16 @@ class App extends Component {
     })
   }
 
-  editUser = (index, event) => {
-    document.getElementById(index).childNodes[3].childNodes[0].style.display="block";    
-    document.getElementById(index).childNodes[3].childNodes[1].style.display="none";
-    
-    const fullName = document.getElementById(index).childNodes[0];
-    const email = document.getElementById(index).childNodes[1];
-    const phone = document.getElementById(index).childNodes[2];
-    
-    const fullName_data = fullName.innerHTML;
-    const email_data = email.innerHTML;
-    const phone_data = phone.innerHTML;
+  editUser = (user, event) => {
+    this.setState({
+      editingUserId: user.id,
+      editUser: Object.assign({}, user)
 
-    fullName.innerHTML = "<td><input type='text' value='"+fullName_data+"'></td>";
-    email.innerHTML = "<td><input type='text' value='"+email_data+"'></td>";
-    phone.innerHTML = "<td><input type='text' value='"+phone_data+"'></td>";
+    })
   }
 
   saveUser = (index, event) => {
-    document.getElementById(index).childNodes[3].childNodes[0].style.display="none";
-    document.getElementById(index).childNodes[3].childNodes[1].style.display="block";
-    
-    
-    const fullName = document.getElementById(index).childNodes[0].firstChild.value;
-    const email = document.getElementById(index).childNodes[1].firstChild.value;
-    const phone = document.getElementById(index).childNodes[2].firstChild.value;
-
-    const row1 = document.getElementById(index).childNodes[0];
-    const row2 = document.getElementById(index).childNodes[1];
-    const row3 = document.getElementById(index).childNodes[2];
-    
-    row1.innerHTML = "<td class='fullName'>"+fullName+"</td>";
-    row2.innerHTML = "<td class='email'>"+email+"</td>";
-    row3.innerHTML = "<td class='phone'>"+phone+"</td>";
-
-    this.state.users[index].fullName = fullName;
-    this.state.users[index].email = email;
-    this.state.users[index].phone = phone;    
-    this.setState({});
+// TODO
   }
 
   renderCreateUser(){
@@ -164,7 +157,7 @@ class App extends Component {
               name="fullName"
               placeholder="Full name"
               value={newUser.fullName}
-              onChange={this.handleChange.bind(this, 'fullName')}
+              onChange={this.handleChange.bind(this, 'fullName', 'add')}
             />
           </div>
           <div>
@@ -172,7 +165,7 @@ class App extends Component {
               name="email"
               placeholder="E-mail address"
               value={newUser.email}
-              onChange={this.handleChange.bind(this, 'email')}
+              onChange={this.handleChange.bind(this, 'email', 'add')}
             />
           </div>          
           <div>
@@ -180,18 +173,62 @@ class App extends Component {
               name="phone"
               placeholder="Phone number"
               value={newUser.phone}
-              onChange={this.handleChange.bind(this, 'phone')}
+              onChange={this.handleChange.bind(this, 'phone', 'add')}
             />
           </div>
         </div>
-        <button type="submit">Add new</button>
+        <button type="submit" className="nord-button">Add new</button>
       </form>
+    )
+  }
+
+  renderUser(user){
+    return (            
+      <tr id={user.id}>
+        <td className="fullName">{ user.fullName }</td>
+        <td className="email">{ user.email }</td>
+        <td className="phone">{ user.phone }</td>
+        <td>
+          <button onClick={this.editUser.bind(this, user)}>edit</button>
+          <button onClick={this.deleteUser.bind(this, user.id)}>delete</button>
+        </td>  
+      </tr>
+      
+    )
+  }
+
+  renderEditUser(user){
+    return (            
+      <tr id={user.id}>
+        <td className="fullName">
+          <input 
+          type='text' 
+          value={ this.state.editUser.fullName } 
+          onChange={this.handleChange.bind(this, 'fullName', 'edit')}/>
+        </td>
+        <td className="email">
+          <input 
+          type='text' 
+          value={ this.state.editUser.email }
+          onChange={this.handleChange.bind(this, 'email', 'edit')}/>
+        </td>
+        <td className="phone">
+          <input 
+          type='text' 
+          value={ this.state.editUser.phone }
+          onChange={this.handleChange.bind(this, 'phone', 'edit')}/>
+        </td>
+        <td>
+          <button onClick={this.saveUser.bind(this, user.id)}>save</button>
+          <button onClick={this.deleteUser.bind(this, user.id)}>delete</button></td>  
+      </tr>
+      
     )
   }
 
   renderUserList() {
     // const users = this.state.users;
-    const { users } = this.state;
+    const { users, editingUserId } = this.state;
     return (
       <div>
         <table id="participants">
@@ -204,16 +241,15 @@ class App extends Component {
             </tr>
           </thead>
           <tbody>
-            { users.map((user, index) => 
-           <tr id={user.id}>
-            <td className="fullName">{ user.fullName }</td>
-            <td className="email">{ user.email }</td>
-            <td className="phone">{ user.phone }</td>
-            <td><button onClick={this.saveUser.bind(this, user.id)}>save</button>
-            <button onClick={this.editUser.bind(this, user.id)}>edit</button>
-            <button onClick={this.deleteUser.bind(this, user.id)}>delete</button></td>            
-          </tr>
-        )}
+            { users.map( (user, index) => {
+              if(editingUserId !== user.id){
+                return this.renderUser(user)  
+                }else{
+                return this.renderEditUser(user)               
+                }
+              }
+            
+            )}
           </tbody>
         </table>
 
@@ -224,7 +260,7 @@ class App extends Component {
   render() {
     console.log(this.state.users)
     return (
-      <div className="App">
+      <div className="main-container">
         <h1>List of participants</h1>
         {this.renderCreateUser()}
         {this.renderUserList()}
