@@ -84,7 +84,7 @@ class App extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    this.state.newUser.id = this.state.users.length
+    this.state.newUser.id = this.state.users.length;
     this.setState({
       users: [...this.state.users, this.state.newUser],
       newUser: {
@@ -93,12 +93,6 @@ class App extends Component {
         email:"",
         phone:""
       },
-      // editUser: {
-      //   id:"",
-      //   fullName:"",
-      //   email:"",
-      //   phone:""
-      // }
     })
 }
 
@@ -143,8 +137,15 @@ class App extends Component {
     })
   }
 
-  saveUser = (index, event) => {
-// TODO
+  saveUser = (user, event) => {
+    this.state.editingUserId = -1;    
+    const index = this.state.users.findIndex(function(el){
+        return el.id === user.id;
+      });
+    console.log(index);
+    console.log(this.state);
+    this.state.users[index] = Object.assign({}, this.state.editUser);
+    this.setState({})
   }
 
   renderCreateUser(){
@@ -219,7 +220,7 @@ class App extends Component {
           onChange={this.handleChange.bind(this, 'phone', 'edit')}/>
         </td>
         <td>
-          <button onClick={this.saveUser.bind(this, user.id)}>save</button>
+          <button onClick={this.saveUser.bind(this, user)}>save</button>
           <button onClick={this.deleteUser.bind(this, user.id)}>delete</button></td>  
       </tr>
       
