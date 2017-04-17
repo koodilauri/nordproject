@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-// import { Field } from 'redux-form';
+import { Field } from 'redux-form';
 
 import logo from './logo.svg';
 import './App.css';
@@ -22,6 +22,7 @@ class App extends Component {
   constructor(){
     super();
     this.state={
+      errorMessage: "",
       editingUserId: -1,
       // holds the value for sorting the rows
       // values: undefined, "ascend", "descend"
@@ -68,32 +69,54 @@ class App extends Component {
 
   handleChange = (field, type, event) => {
     const newValue = event.target.value;
-    if (field === 'fullName') {
-      // if (newValue.test(\aZ[]\))
-    }
-    if (type === 'add') {
-      this.state.newUser[field] = event.target.value;
-      this.setState({});
-    }
-    if(type === 'edit') {
-      this.state.editUser[field] = event.target.value;
-      this.setState({});
-    }
-    // console.log(this.state)
+    const patt1 = /^([a-z']+(-| )?)+$/i;
+    const patt2 = /[^a-zA-Z@.0-9]\s/;
+    const patt3 = /[^0-9]/;
+    if(field === "fullName" && patt1.test(newValue)){
+      if (type === 'add') {
+        this.state.newUser[field] = event.target.value;
+        this.setState({});
+      }
+      if(type === 'edit') {
+        this.state.editUser[field] = event.target.value;
+        this.setState({});
+      }
+    } if(field === "email" && !patt2.test(newValue)){
+      if (type === 'add') {
+        this.state.newUser[field] = event.target.value;
+        this.setState({});
+      }
+      if(type === 'edit') {
+        this.state.editUser[field] = event.target.value;
+        this.setState({});
+      }
+    } if(field === "phone" && !patt3.test(newValue)){
+      if (type === 'add') {
+        this.state.newUser[field] = event.target.value;
+        this.setState({});
+      }
+      if(type === 'edit') {
+        this.state.editUser[field] = event.target.value;
+        this.setState({});
+      }
+    }  
   }
 
   handleSubmit = (event) => {
     event.preventDefault();
-    this.state.newUser.id = this.state.users.length;
-    this.setState({
-      users: [...this.state.users, this.state.newUser],
-      newUser: {
-        id:"",
-        fullName:"",
-        email:"",
-        phone:""
-      },
-    })
+    const {newUser} = this.state;
+    if(this.validateInput(newUser)){
+      newUser.id = this.state.users.length;
+      this.setState({
+        users: [...this.state.users, newUser],
+        newUser: {
+          id:"",
+          fullName:"",
+          email:"",
+          phone:""
+        },
+      })
+    }
 }
 
   sortTable = (field, event) => {
@@ -132,20 +155,46 @@ class App extends Component {
   editUser = (user, event) => {
     this.setState({
       editingUserId: user.id,
-      editUser: Object.assign({}, user)
-
+      editUser: Object.assign({}, user),
+      errorMessage: ""
     })
   }
 
   saveUser = (user, event) => {
-    this.state.editingUserId = -1;    
-    const index = this.state.users.findIndex(function(el){
-        return el.id === user.id;
-      });
-    console.log(index);
-    console.log(this.state);
-    this.state.users[index] = Object.assign({}, this.state.editUser);
-    this.setState({})
+    if (this.validateInput(this.state.editUser)){
+      this.state.editingUserId = -1;    
+      const index = this.state.users.findIndex(function(el){
+          return el.id === user.id;
+        });
+      this.state.users[index] = Object.assign({}, this.state.editUser);
+      this.setState({})
+  }
+  }
+
+  validateInput = (user) => {
+        // const {newUser} = this.state;
+    const patt1 = /^([a-z']+(-| )?)+$/i;
+    const patt2 = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const patt3 = /[^0-9]/;
+    if(!patt1.test(user.fullName)){
+      this.state.errorMessage = "Invalid name"
+      this.setState({})
+      console.log(this.state)      
+      return false
+    } if (!patt2.test(user.email)){
+      this.state.errorMessage = "Invalid email address"
+      this.setState({})      
+      console.log(this.state)
+      return false
+    } if (patt3.test(user.phone)){
+      this.state.errorMessage = "Invalid phone number";
+      this.setState({})
+      console.log(this.state)
+      return false
+    } 
+      this.state.errorMessage = "";
+      this.setState({})
+      return true
   }
 
   renderCreateUser(){
@@ -258,11 +307,22 @@ class App extends Component {
     )
   }
 
+  renderErrorMessage(){
+    return(
+      <div>
+        <p>
+          {this.state.errorMessage}
+        </p>
+      </div>
+    )
+  }
+
   render() {
     console.log(this.state.users)
     return (
       <div className="main-container">
         <h1>List of participants</h1>
+        {this.renderErrorMessage()}
         {this.renderCreateUser()}
         {this.renderUserList()}
       </div>
