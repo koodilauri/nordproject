@@ -18,18 +18,145 @@
   font-size: large;
 }
 
-/*body {
-  background-color: red;  
-}*/
-
-.main-container {
-  margin: 20px;
+body {
+  background-color: lightblue;  
 }
 
-.nord-button {
-  background-color: grey;
-  border-radius: 5px;
-  padding: 10px;
+.main-container {
+  text-align: center;
+  margin: auto;
+}
+
+button {
+  background-color: lightgray;
+  text-align: center;
+  text-decoration: none;
+  border:none;
+  height: 40px;
+  /*padding: 15px 32px;*/
+  padding: 10px 30px;  
+  font-size: 16px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.nord-button {
+  float: right!important;
+  padding: 45px;
+}
+
+.edit-button {
+  fill: #909090;
+  height: 24px;
+  width: 24px;
+}
+
+.save-button {
+  background: #07f;
+  color: white;
+
+}
+
+table {
+  width:912px;
+  margin: auto;
+  border-collapse: collapse;
+}
+
+tbody > tr > td {
+background-color: white;
+padding:15px 15px 15px 24px;  
+border-bottom:2px solid lightgrey;
+  color: #505050;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  text-align: left;
+}
+td>div:first-child {
+float:left;
+}
+td>div:last-child {
+float:right;
+}
+td:last-child{
+  width: 210px;
+}
+thead>tr>td{
+  background-color: white;
+  border-bottom:2px solid lightgrey;
+  color: #505050;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  text-align: left;
+  padding: 15px 15px 16px 15px;
+}
+
+thead {
+  height: 48px;
+  color: #757575;
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 500;
+}
+
+form{
+  background-color: white;
+  display: inline-block;
+  width: 912px;
+  border-bottom: 4px solid lightgrey;
+}
+
+.create-row > td{
+  border-right: 5px solid white;
+  padding: 16px 0px 16px 16px;
+}
+
+.create-row > td:last-child{
+  text-align: right;
+  vertical-align: top;
+  width: 40%;
+  padding-right: 12px;
+}
+
+.create-row > td:nth-child(2), .create-row > td:nth-child(3){
+  padding-left:10px;
+}
+
+.create-row > td:nth-child(2) > input {
+  width:250px;
+}
+
+/*form > div {
+  padding: 16px;
+}
+
+form > div > div {
+  display: inline;
+}*/
+
+.create-input {
+  height: 34px;
+  float: left;
+  padding-left:10px;
+}
+
+h1 {
+  background-color: lightgrey;
+  margin-top:0px;
+  text-align: left;
+  padding:32px;
+  line-height: 32px;
+  color: white;
+}
+
+h2 {
+  text-align: left;
+  width:912px;
+  margin: auto;
+  color: #757575;
+  padding:30px 0px 15px 0px;
 }
 
 @keyframes App-logo-spin {

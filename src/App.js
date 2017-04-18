@@ -160,6 +160,13 @@ class App extends Component {
     })
   }
 
+  cancelEdit = () => {
+    this.setState({
+      editingUserId: -1,
+      errorMessage: ""
+    })
+  }
+
   saveUser = (user, event) => {
     if (this.validateInput(this.state.editUser)){
       this.state.editingUserId = -1;    
@@ -201,33 +208,34 @@ class App extends Component {
     const {newUser} = this.state;
     return(
       <form onSubmit={this.handleSubmit}>
-        <div>
-          <div>
-            <input
+        <tr className="create-row">
+          <td>
+            <input className="create-input"
               name="fullName"
               placeholder="Full name"
               value={newUser.fullName}
               onChange={this.handleChange.bind(this, 'fullName', 'add')}
             />
-          </div>
-          <div>
-            <input
+          </td>
+          <td>
+            <input className="create-input"
               name="email"
               placeholder="E-mail address"
               value={newUser.email}
               onChange={this.handleChange.bind(this, 'email', 'add')}
             />
-          </div>          
-          <div>
-            <input
+          </td>          
+          <td>
+            <input className="create-input"
               name="phone"
               placeholder="Phone number"
               value={newUser.phone}
               onChange={this.handleChange.bind(this, 'phone', 'add')}
             />
-          </div>
-        </div>
-        <button type="submit" className="nord-button">Add new</button>
+          </td>
+          <td><button type="submit" className="nord-button">Add new</button></td>
+          
+        </tr>
       </form>
     )
   }
@@ -239,8 +247,8 @@ class App extends Component {
         <td className="email">{ user.email }</td>
         <td className="phone">{ user.phone }</td>
         <td>
-          <button onClick={this.editUser.bind(this, user)}>edit</button>
-          <button onClick={this.deleteUser.bind(this, user.id)}>delete</button>
+          <div><button className="edit-button" onClick={this.editUser.bind(this, user)}></button></div>
+          <div><button onClick={this.deleteUser.bind(this, user.id)}>delete</button></div>
         </td>  
       </tr>
       
@@ -269,8 +277,8 @@ class App extends Component {
           onChange={this.handleChange.bind(this, 'phone', 'edit')}/>
         </td>
         <td>
-          <button onClick={this.saveUser.bind(this, user)}>save</button>
-          <button onClick={this.deleteUser.bind(this, user.id)}>delete</button></td>  
+          <div><button onClick={this.cancelEdit}>cancel</button></div>          
+          <div><button className="save-button" onClick={this.saveUser.bind(this, user)}>save</button></div></td>  
       </tr>
       
     )
@@ -321,7 +329,8 @@ class App extends Component {
     console.log(this.state.users)
     return (
       <div className="main-container">
-        <h1>List of participants</h1>
+        <div><h1>Nordsoftware</h1></div>
+        <div><h2>List of participants</h2></div>
         {this.renderErrorMessage()}
         {this.renderCreateUser()}
         {this.renderUserList()}
